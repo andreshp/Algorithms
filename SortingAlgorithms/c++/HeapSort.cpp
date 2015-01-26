@@ -1,5 +1,14 @@
+//////////////////////////////////////////////////
+// Autor: Andrés Herrera Poyatos
+// Date: February, 2014
+// Sorting Algorithm: HeapSort
+///////////////////////////////////////////////////
+
+/* Programa que devuelve el tiempo que el algoritmo de ordenación heapsort
+   tarda en ordenar un array de tamaño dado comoo argumento */
+
 #include <iostream>
-#include <stdlib.h>     /* srand, rand */
+#include <stdlib.h>
 #include <time.h>  
 
 using namespace std;
@@ -40,31 +49,25 @@ void HeapSort(int* array, int start, int end){
 }
 
 int main(){
-	/* Clock returns the number of clock ticks since the program was launched */
-	clock_t start;
-    double duration;
-	start = clock();
 
-    /* Your algorithm here */
+    // Time inicialization:
+    srand(time(NULL));
+	clock_t start;
+
+    // Array declaration:
     const int LENGHT = 2000000;
     int array[LENGHT];
 
-    srand(time(NULL));
     for (int i = 0; i < LENGHT; i++){
     	array[i] = rand() % 10034210;
     }
 
+    // Start Sorting
+    start = clock();
+
     HeapSort(array, 0, LENGHT);
 
-    /* int end = LENGHT - 1;
-	cout << "Array ordenado: {";
-	for (int i = 0; i < end; i++)
-		cout << array[i] << ", ";
-
-	cout << array[end] << "}"; */
-
-    /* End of code */
-    duration = ( clock() - start ) / (double) CLOCKS_PER_SEC;
-	cout<<"Time: "<< duration << endl;
+    // Total time:
+	cout << "Time: " << ( clock() - start ) / (double) CLOCKS_PER_SEC << endl;
 	return 0;
 }
