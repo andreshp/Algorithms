@@ -1,0 +1,32 @@
+---
+title: "Estructura de Datos: Eficiencia"
+author: "Andrés Herrera Poyatos"
+date: "27/01/2015"
+output: pdf_document
+---
+
+## Problema de eficiencia
+Probar que $f(n) = \sum_{i=1}^n \log_2 i$ es $\Theta(n \log n)$.  
+
+***Solución:***
+
+Podemos considerar que $f(n) = \sum_{i=1}^n \log i$ pues ambas funciones solo se
+diferencian en multiplicar por una constante ($\frac{1}{log 2}$), lo que no
+cambia la eficiencia de la misma.
+
+En segundo lugar, es claro que $f(n) = \sum_{i=1}^n \log i \le \sum_{i=1}^n \log n = n \log n$,
+obteniendo la primera desigualdad, $f(n)$ es $O(n \log n)$.
+
+Ahora nos fijamos en el siguiente hecho
+$$ \int_1^x \log t\,dt = x\,(\log x - 1) + 1 $$
+
+Además, para $n \in \mathbb{N}$
+$$ \int_1^n \log t\,dt = \sum_{i=2}^n \left(\int_{i-1}^i \log t\,dt \right) \le \sum_{i=2}^n \log i = \sum_{i=1}^n \log i = f(n) $$
+
+donde se ha utilizado la aditividad de la integral y que $\int_{i-1}^i \log t\,dt \le \int_{i-1}^i \log i\,dt = \log i$ .
+Juntando ambas deducciones se tiene
+$$ \frac{1}{2} n\log n = n\frac{\log n}{2} \le n\,(\log n - 1) + 1 = \int_1^n \log t\,dt \le f(n) \ \ \ \forall n \in \mathbb{N} $$
+
+Lo que nos proporciona $\frac{1}{2} n\log n \le f(n) \ \forall n \in \mathbb{N}$, la segunda desigualdad que necesitabamos para decir
+que $f(n)$ es $\Theta(n \log n)$.
+$$ \rightline{$\blacksquare$} $$
