@@ -52,12 +52,12 @@ def mergeSort(array, begin, end):
 ######################## MAIN ##########################
 
 # See if arguments are correct
-if len(sys.argv) < 2:
-    print("Error: Needs the array.txt as argument")
+if len(sys.argv) == 1 or len(sys.argv) > 3:
+    print("Error: Needs the array.txt as an argument. The option -n don't print the sorted array.")
     sys.exit()
 
 # Read array
-numbers = open(sys.argv[1], "r")    
+numbers = open(sys.argv[1 if len(sys.argv) == 2 else 2], "r")    
 array = [ ]
 for line in numbers:
     array.append(int(line))
@@ -68,7 +68,8 @@ mergeSort(array, 0, len(array))
 print("--- %f seconds ---" % (time.time() - start_time) )
 
 # Print the sorted array:
-for element in array:
-    print(element, " ", end="")
-print()
+if len(sys.argv) == 2:
+    for element in array:
+        print(element, " ", end="")
+    print()
 numbers.close()
