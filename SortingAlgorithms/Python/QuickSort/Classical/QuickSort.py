@@ -96,7 +96,7 @@ def quickSort(array, begin, end):
 
     if pivot_index - begin > 1:
         quickSort(array, begin, pivot_index)
-    if end - pivot_index > 1:
+    if end - pivot_index - 1 > 1:
         quickSort(array, pivot_index+1, end)
 
 
