@@ -15,15 +15,25 @@ import time # To time the program
 # Function that merge both subarrays ([begin,middle[, [middle,end[)
 def merge(array, begin, middle, end):
     subarray = array[begin:middle]; j = middle; i = 0; k = begin
+    count = 1; chosen = -1
     while i < len(subarray) and j < end:
         if subarray[i] <= array[j]:
-            array[k] = subarray[i]; i += 1
+            array[k:k+count] = subarray[i:i+count]; i += count; k += count
+            if chosen == 0:
+                count = min(end-k, len(subarray)-i, end-j, (int)(1.1*count))
+            else:
+                count = 1; chosen = 0
         else:
-            array[k] = array[j]; j += 1
-        k += 1
+            array[k:k+count] = array[j:j+count]; j += count; k += count
+            if chosen == 1:
+                count = min(end-k, len(subarray)-i, end-j, (int)(1.1*count))
+            else: 
+                count = 1; chosen = 1
 
     if j >= end:
         array[k:end] = subarray[i:len(subarray)]
+    for i in range(begin+1, end):
+        insert(array, begin, i)
 
 # Function which gets the next run for TimSort.
 # A run is a sublist of array starting in begin verifying
@@ -75,8 +85,8 @@ def timSort(array, begin, end):
     while(len(runs) >= 2):
         mergeRuns(array, runs, begin)
     
-    if begin < end:
-        insert(array, 0, begin)
+    for i in range(1, end):
+        insert(array, 0, i)
 
 ######################## MAIN ##########################
 
