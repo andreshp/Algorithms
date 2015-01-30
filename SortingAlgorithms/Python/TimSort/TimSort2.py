@@ -12,28 +12,48 @@
 import sys  # For arguments (syc.argv) and exit (syc.exit())
 import time # To time the program
 
+# Binary Search
+def binarySearch(array, begin, end, key):
+    if end - begin > 1:
+        middle = (begin + end-1) // 2
+        if array[middle] < key:
+            return binarySearch(array, middle+1, end, key)
+        elif array[middle] > key:
+            return binarySearch(array, begin, middle, key)
+        else:
+            return middle
+    else:
+        return begin
+
 # Function that merge both subarrays ([begin,middle[, [middle,end[)
 def merge(array, begin, middle, end):
     subarray = array[begin:middle]; j = middle; i = 0; k = begin
     count = 1; chosen = -1
     while i < len(subarray) and j < end:
-        if subarray[i] <= array[j]:
-            array[k:k+count] = subarray[i:i+count]; i += count; k += count
-            if chosen == 0:
-                count = min(end-k, len(subarray)-i, end-j, (int)(1.1*count))
+        if count < 7:
+            if subarray[i] <= array[j]:
+                array[k] = subarray[i]; i += 1; k += 1
+                if chosen == 0:
+                    count += 1
+                else:
+                    count = 1; chosen = 0
             else:
-                count = 1; chosen = 0
+                array[k] = array[j]; j += 1; k += 1
+                if chosen == 1:
+                    count += 1
+                else:
+                    count = 1; chosen = 1
+        elif chosen == 0:
+            pos = binarySearch(subarray, i, len(subarray), array[j])
+            array[k:k+pos-i] = subarray[i:pos]; k += pos-i; i = pos 
+            array[k] = array[j]; j+=1; k+=1; count = 0
         else:
-            array[k:k+count] = array[j:j+count]; j += count; k += count
-            if chosen == 1:
-                count = min(end-k, len(subarray)-i, end-j, (int)(1.1*count))
-            else: 
-                count = 1; chosen = 1
+            pos = binarySearch(array, j, end, subarray[i])
+            array[k:k+pos-j] = array[j:pos]; k += pos-j; j = pos 
+            array[k] = subarray[i]; i+=1; k+=1; count = 0
 
     if j >= end:
         array[k:end] = subarray[i:len(subarray)]
-    for i in range(begin+1, end):
-        insert(array, begin, i)
 
 # Function which gets the next run for TimSort.
 # A run is a sublist of array starting in begin verifying
@@ -59,12 +79,11 @@ def getRun(array, begin, end):
 # Inserts the element of index given in the subarray array[0:index].
 # It is supposed than that subarray is sorted.
 def insert(array, begin, index):
-    if index >= len(array):
-        print((begin,index))
+    pos = binarySearch(array, begin, index, array[index])
     i = index-1; element = array[index]
-    while(i >= begin and array[i] > element):
+    while(i > pos):
         array[i+1] = array[i]; i -= 1
-    array[i+1] = element
+    array[pos] = element
 
 def mergeRuns(array, runs, begin):
     merge(array, runs[-2][0], runs[-1][0], begin)
@@ -85,8 +104,8 @@ def timSort(array, begin, end):
     while(len(runs) >= 2):
         mergeRuns(array, runs, begin)
     
-    for i in range(1, end):
-        insert(array, 0, i)
+    if begin < end:
+        insert(array, 0, begin)
 
 ######################## MAIN ##########################
 
