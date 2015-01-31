@@ -49,8 +49,6 @@ def getRun(array, begin, end):
 # Inserts the element of index given in the subarray array[0:index].
 # It is supposed than that subarray is sorted.
 def insert(array, begin, index):
-    if index >= len(array):
-        print((begin,index))
     i = index-1; element = array[index]
     while(i >= begin and array[i] > element):
         array[i+1] = array[i]; i -= 1

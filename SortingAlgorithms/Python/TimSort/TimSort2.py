@@ -25,12 +25,15 @@ def binarySearch(array, begin, end, key):
     else:
         return begin
 
-# Function that merge both subarrays ([begin,middle[, [middle,end[)
+# Function that merge both subarrays ([begin,middle[, [middle,end[).
+# It uses Galloping: When you spent 7 iterations inserting a item of the
+# same array it uses binary search to find the position of that arrray
+# where you would insert the corresponding element of the other one.
 def merge(array, begin, middle, end):
     subarray = array[begin:middle]; j = middle; i = 0; k = begin
     count = 1; chosen = -1
     while i < len(subarray) and j < end:
-        if count < 7:
+        if count < 7: # Check it is not in galloping mode (7 iteration failed)
             if subarray[i] <= array[j]:
                 array[k] = subarray[i]; i += 1; k += 1
                 if chosen == 0:
@@ -43,6 +46,7 @@ def merge(array, begin, middle, end):
                     count += 1
                 else:
                     count = 1; chosen = 1
+        # Galloping:
         elif chosen == 0:
             pos = binarySearch(subarray, i, len(subarray), array[j])
             array[k:k+pos-i] = subarray[i:pos]; k += pos-i; i = pos 
