@@ -106,7 +106,7 @@ def quickSelect(array, begin, end, order):
         elif pivot_index < order:
             return quickSelect(array, pivot_index+1, end, order)
         else:
-            return array[begin]
+            return array[pivot_index]
 
 
 ######################## MAIN ##########################
@@ -127,7 +127,6 @@ order = int(sys.argv[2])
 if order < 0 or order >= len(array):
     print("Error: Order must be between 0 and the length of the array - 1.")
     sys.exit()
-
 
 # Execute quickSelect and count the time wasted
 start_time = time.time()
