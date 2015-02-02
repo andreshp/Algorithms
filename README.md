@@ -8,4 +8,5 @@ You can find the following directories:
 - **AsymptoticProblems** : Problems related to Asymptotic Complexity Theory.
 - **ClosestPair** : Algorithm O(n log n) that return the closest pair of points of a given set.
 - **PeakFinding** : Algorithms for finding a peak in an array or matrix. A peak is a element that is smaller than its neighbours.
-- **SortingAlgorithms** : Some sorting algorithms (quicksort, heapsort, mergesort).
+- **SelectionAlgorithms** : Some selection algorithms and variants (quickselect).
+- **SortingAlgorithms** : Some sorting algorithms and variants (quicksort, heapsort, mergesort, timsort).
