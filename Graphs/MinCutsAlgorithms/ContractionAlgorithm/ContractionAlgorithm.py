@@ -9,7 +9,7 @@
 # This program read a graph as an adjacency list from a file a execute the 
 # Contraction Algorithm for the Minimum Cut Problem. Afterwards, the number
 # of crossing edges in the min cut is printed. The user can choose between
-# print or not the sets of vertices A and B of the minimum cut (A,B). 
+# printing or not the sets of vertices A and B of the minimum cut (A,B). 
 
 import sys  # For arguments (syc.argv) and exit (syc.exit())
 import time # To time the program
