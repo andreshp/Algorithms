@@ -3,12 +3,13 @@
 ######################################################################
 # Autor: Andrés Herrera Poyatos
 # Universidad de Granada, January, 2015
-# Breadth-First Search for Shortest Path Problem in Graph Theory
+# Breadth-First Search for finding the Connected Components of Graph
 #######################################################################
 
-# This program read a graph as an adjacency list from a file and two graph's 
-# nodes. Afterwards it executes de BFS algorithm on it and returns the 
-# length of the shortest path. The user can choose between printing the path or not. 
+# This program read a graph as an adjacency list from a file. 
+# Afterwards it executes de BFS algorithm on it to find the number of
+# connected components of the graph. The user can choose between printing 
+# them or not. 
 
 import sys   # For arguments (syc.argv) and exit (syc.exit())
 import time  # To time the program
@@ -56,94 +57,70 @@ class Graph(object):
         
         data.close()
 
+    # Find every connected component in the graph and returns them.
+    def connectedComponents(self):
+        connected_components = []
+        if len(self.adj_list) > 0:
+            visited = set()
+            for node in self.adj_list:
+                if node not in visited:
+                    visited.add(node)
+                    connected_components.append(self.breadthFirstSearch(node, visited))
+                elif len(visited) == len(self.adj_list):
+                    break
+        return connected_components
+
     # Find the shortest path between a and b using BFS.
     # Efficiency: O(|V| + |E|)
-    def breadthFirstSearch(self, a, b):
-        # See if parameters are correct:
-        if a not in self.adj_list:
-            raise RuntimeError(a)
-        if b not in self.adj_list:
-            raise RuntimeError(b)
-        
-        if a == b: return 0, [a] # If a==b then that's the asked path
+    def breadthFirstSearch(self, a, visited):
 
-        # Algorithm
-        visited = {a : (0,a)} # Dictionary with the visited nodes and their distance to a
         q = queue.Queue() # queue with the nodes to read
-        q.put(a)
-        found = False
-        # Visit nodes 
-        while(not q.empty() and not found):
-            node = q.get()
+        q.put(a); connected_component = []
+
+        # Visit every possible node
+        while(not q.empty()):
+            node = q.get(); connected_component.append(node)
             for neighbour in self.adj_list[node]:
                 if not neighbour in visited:
-                    visited[neighbour] = (visited[node][0]+1, node)
+                    visited.add(neighbour)
                     q.put(neighbour)
-                    if (neighbour == b):
-                        found = True; break
 
-        if found:
-            sol = [b]; x = visited[b][1]
-            while(x != a):
-                sol.append(x); x = visited[x][1]
-            sol.append(a)
-            return visited[b][0], sol[::-1]
-        else:
-            return -1, []
-
-    # Returns the edges of the graph 
-    def edges(self):
-        edges = set()
-        for node in range(1, len(self.adj_list)):
-            for neighbour in self.adj_list[node]:
-                if (neighbour, node) not in edges:
-                    for i in range(self.adj_list[node][neighbour]):
-                        edges.add((node, neighbour))
-        return edges
+        return connected_component
 
 
 ######################## MAIN ##########################
 
 # See if arguments are correct
-if len(sys.argv) < 4 or len(sys.argv) > 5:
-    print("Sintax: BreadthFirstSearch.py <options> graph.txt NodeA NodeB \n The option -n don't print the path between A and B.")
+if len(sys.argv) < 2 or len(sys.argv) > 3:
+    print("Sintax: BreadthFirstSearch.py <options> graph.txt \n The option -n don't print the connected components.")
     sys.exit()
 
-print_path = True
+print_components = True
 
-if len(sys.argv) > 4:
+if len(sys.argv) > 2:
     if sys.argv[1] == "-n":
-        print_path = False
+        print_components = False
 
 # Create Graph
 
 try:
-    graph_file = sys.argv[1 if len(sys.argv) ==  4 else 2]
+    graph_file = sys.argv[1 if len(sys.argv) ==  2 else 2]
     graph = Graph()
     graph.readGraph(graph_file)
 except IOError:
    print("Error: The file",  graph_file,  "can\'t be read.")
    sys.exit()
 
-a = int(sys.argv[2 if len(sys.argv) ==  4 else 3])
-b = int(sys.argv[3 if len(sys.argv) ==  4 else 4])
-
-
-# Execute Breadth-First Search and count the time wasted
+# Execute Breadth-First Search for connected components and count the time wasted
 start_time = time.time()
-
-try:
-    length, path = graph.breadthFirstSearch(a,b)
-except RuntimeError as element:
-   print("Error:", element.args[0] , "is not a node.")
-   sys.exit()
-
+components = graph.connectedComponents()
 print("--- %f seconds ---" % (time.time() - start_time))
 
-if length < 0:
-    print("The given nodes are not connected.")
-else:
-    print("Path length: ", length)
-    if print_path:
-        print("Path between the nodes ", a, " and ", b, ": ", path)
+print("Number of connected components: ", len(components))
+if print_components:
+    if len(components) == 0:
+        print("There are no connected components.")
+    else:
+        for i in range(0,len(components)):
+            print("Connected Component ", i+1, ": ", components[i])
         
