@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-######################################################################
-# Autor: Andrés Herrera Poyatos
-# Universidad de Granada, January, 2015
-# Depth-First Search for finding a Topological Sort of a Directed Graph
 #######################################################################
+# Autor: Andrés Herrera Poyatos
+# Universidad de Granada, February, 2015
+# Depth-First Search for finding a Topological Sort of a Directed Graph
+########################################################################
 
 # This program read a directed graph as an adjacency list from a file. 
-# Afterwards it executes the DFS algorithm on it to find a topologicalsort
+# Afterwards it executes the DFS algorithm on it to find a topological sort
 # of the graph if it is possible (the graph must be acyclic, what is 
 # checked in the code). It then prints the result.
 # 
