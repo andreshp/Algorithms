@@ -2,7 +2,7 @@
 
 ######################################################################
 # Autor: Andrés Herrera Poyatos
-# Universidad de Granada, January, 2015
+# Date: February, 2015
 # Min-Heap implementation for HeapSort
 #######################################################################
 
@@ -63,7 +63,7 @@ class MinHeap(object):
     # Insert Method
     def insert(self, element):
         self.heap.append(element)
-        self.repairUp(len(self.heap)-1)
+        self._repairUp(len(self.heap)-1)
 
     # Insert the elements of an array
     def insertArray(self, array):
@@ -75,14 +75,19 @@ class MinHeap(object):
     def delete(self, index):
         swap(self.heap, index, len(self.heap)-1)
         self.heap.pop()
-        self.repairDown(index)
+        self._repairDown(index)
 
     # Delete min from the Heap.
     # Precondition: The Heap must be not empty. 
     def deleteMin(self):
         swap(self.heap, 0, len(self.heap)-1)
         self.heap.pop()
-        self.repairDown(0)
+        self._repairDown(0)
+
+    # Change the value of an element and repair the MinHeap Structure.
+    def changeElement(self, index, value):
+        self.heap[index] = value
+        self._repairHeap(index)
 
     # Execute HeapSort to the elements of the heap.
     def heapSort(self):
@@ -105,7 +110,7 @@ class MinHeap(object):
     
     # Check that it is a MinHeap.
     # The invariant is checked.
-    def checkHeap(self):
+    def _checkHeap(self):
         is_heap = True; fail = -1 
         for i in range(1, len(self.heap)):
             if self.heap[i] < self.heap[(i-1) // 2]:
@@ -115,12 +120,12 @@ class MinHeap(object):
 
     # Repair the Min Heap invariant:
     # Each parent key is less or equal than their children keys.
-    def repairHeap(self, index):
-        self.repairUp(index)
-        self.repairDown(index)
+    def _repairHeap(self, index):
+        self._repairUp(index)
+        self._repairDown(index)
 
     # Go up in the Heap repairing its invariant
-    def repairUp(self, index):
+    def _repairUp(self, index):
         parent = (index-1) // 2
         while index > 0:
             if self.heap[index] < self.heap[parent]:
@@ -130,7 +135,7 @@ class MinHeap(object):
             parent = (index-1) // 2
 
     # Go down in the Heap repairing its invariant
-    def repairDown(self, index):
+    def _repairDown(self, index):
         child = 2 * index + 1
         while child < len(self.heap):
             if child + 1 < len(self.heap) and self.heap[child] > self.heap[child+1]:
