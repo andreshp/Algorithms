@@ -67,21 +67,27 @@ class Graph(object):
         
         if a == b: return 0, [a] # If a==b then that's the asked path
 
-        # Algorithm
+        # Algorithm:
         visited = {a : (0,a)} # Dictionary with the visited nodes and their distance to a
-        q = queue.Queue() # queue with the nodes to read
-        q.put(a)
-        found = False
-        # Visit nodes 
+        q = queue.Queue()     # queue with the nodes to read
+        q.put(a)              # q = {a}
+        found = False         # b hasn't been found yet
+
+        # Visit every level of nodes (from a) until reaching b.
+        # In that case that's the shortest path (proof by induction).
         while(not q.empty() and not found):
             node = q.get()
+            # Visit node neighbours:
             for neighbour in self.adj_list[node]:
                 if not neighbour in visited:
+                    # The node is added to visited with its distance to a and the parent node in that path.
                     visited[neighbour] = (visited[node][0]+1, node)
-                    q.put(neighbour)
+                    q.put(neighbour)  # Added to the queue
+                    # If it is b we are done
                     if (neighbour == b):
                         found = True; break
-
+        # If it is found the path is returned.
+        # Else return -1, []
         if found:
             sol = [b]; x = visited[b][1]
             while(x != a):
@@ -116,7 +122,6 @@ if len(sys.argv) > 4:
         print_path = False
 
 # Create Graph
-
 try:
     graph_file = sys.argv[1 if len(sys.argv) ==  4 else 2]
     graph = Graph()
@@ -131,19 +136,17 @@ b = int(sys.argv[3 if len(sys.argv) ==  4 else 4])
 
 # Execute Breadth-First Search and count the time wasted
 start_time = time.time()
-
 try:
     length, path = graph.breadthFirstSearch(a,b)
 except RuntimeError as element:
    print("Error:", element.args[0] , "is not a node.")
    sys.exit()
-
 print("--- %f seconds ---" % (time.time() - start_time))
 
+# Print the result
 if length < 0:
     print("The given nodes are not connected.")
 else:
     print("Path length: ", length)
     if print_path:
         print("Path between the nodes ", a, " and ", b, ": ", path)
-        
