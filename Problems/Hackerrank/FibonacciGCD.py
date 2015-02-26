@@ -2,7 +2,7 @@
 
 ######################################################################################
 # Autor: Andrés Herrera Poyatos
-# Universidad de Granada, F, 2015
+# Universidad de Granada, February, 2015
 # Hackerrank Problem - Fibonacci GCD
 ######################################################################################
 
