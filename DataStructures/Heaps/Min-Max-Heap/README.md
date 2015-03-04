@@ -33,5 +33,5 @@ A Min/Max Heap supports the following operations:
 
 ## Implementation
 
-This implementation let the user to chooses between MaxHeap or MinHeap. I call it Min/Max Heap.
+This implementation let the user to choose between MaxHeap or MinHeap. I call it Min/Max Heap.
 
