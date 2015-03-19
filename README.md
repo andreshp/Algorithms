@@ -10,9 +10,8 @@ All the algorithms I have implemented classified accordingly their purpose.
 You can find the following directories:
 
 - **Algebra** : Algorithms related to Algebra (find primes numbers, greatest common divisor)
-- **ClosestPair** : Algorithm O(n log n) that return the closest pair of points of a given set.
-- **Graphs** : Graphs algorithms for different problems such as the Minimum Cut Problem.
-- **PeakFinding** : Algorithms for finding a peak in an array or matrix. 
+- **Graphs** : Graphs algorithms for different problems such as the Minimum Cut Problem or Finding the Shortest Path.
+- **GreedyAlgorithms**: Famous greedy algorithms like the ones for the Scheduling Problem.
 - **Problems** : Problems related to algorithms.
 - **Product** : Algorithms for the product operation (numbers, matrices...)
 - **SelectionAlgorithms** : Some selection algorithms and variants (quickselect).
