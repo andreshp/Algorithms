@@ -3,16 +3,15 @@
 ######################################################################
 # Autor: Andrés Herrera Poyatos
 # Universidad de Granada, January, 2015
-# Dijkstra Algorithm for Shortest Path (non-negative weight) Problem
+# Prim Algorithm for Minimum Spanning Tree Problem
 #######################################################################
 
-# This program read a weighted graph as an adjacency list from a file and a graph's
-# node. Afterwards it executes de Dijkstra algorithm on it and returns the 
-# length of the shortest path each other node.
-# The user can choose between printing the path or not.
+# This program read a weighted graph as an adjacency list from a file. 
+# Afterwards it executes de Prim algorithm to find the minimum spanning tree.
 
 import sys
 import time
+import functools # reduce
 
 #------------- MINHEAP IMPLEMENTATION FOR DIJKSTRA--------------#
 
@@ -156,8 +155,9 @@ class Node(object):
     # Contructor
     def __init__(self, value):
         self.key = value
-        self.distance = -1
+        self.distance = 0
         self.index = -1
+        self.neighbours = []
     # Overloading comparisons operators
     def __lt__(self, other):
         return (self.distance < other.distance)
@@ -177,7 +177,7 @@ class WeightedGraph(object):
     # The class is conformed by these members:
     #  - nodes     : Dictionary which keys are the graph's nodes keys and its values the nodes of the graphs.
     #                Thanks to this dictionary the keys works as pointers to the graph nodes, what allows
-    #                work with more information in each node for dijkstra algorithm.
+    #                work with more information in each node for prim algorithm.
     #  - adj_list  : Adjacency list to represent the graph. It is implemented as a dictionary of sets.
     #                The first dictionary's keys are the nodes (Objects Node) of the graph. Its values are sets with
     #                tuples (key's neighbours, distance of the edge).
@@ -220,77 +220,85 @@ class WeightedGraph(object):
 
         data.close()
 
-    # Dijkstra algorithm
+    # Prim algorithm
     # Parameters:
-    #    - node : Key of the node to which apply the algorithm.
-    # Result: Each Node distance attribute has the shortest distance to the given node.
-    def dijkstra(self, node):
-        # Find the node with key node.
-        a = self.nodes[node]
+    def prim(self):
+        # Get a node from the graph as started node.
+        a = self.nodes[1]
         visited = {a}; heap = MinHeap()
 
         # Initialize the visited set and the heap with the non-visited vertices.
         for neighbour, distance in self.adj_list[a]:
             neighbour.distance = distance
+            neighbour.neighbours.append(a)
             heap.insert(neighbour)
 
-        # Apply the Dijkstra iteration until every node is visited
+        # Apply the Prim iteration until every node is visited
         while len(visited) < len(self.adj_list):
-            # Extract the node for which we can claim we have the shortest path:
+            
+            # Extract the next node for the minimmum spanning tree:
             next_node = heap.min(); heap.deleteMin()
             visited.add(next_node)
+            next_node.neighbours[0].neighbours.append(next_node)
 
             # Insert neighbours to the heap (if they aren't) or change their distance
-            # if we have found a shorter path from node using next_node shortest path.
+            # if they are nearer than before to the spanning tree.
             for neighbour, distance in self.adj_list[next_node]:
                 if neighbour not in visited:
-                    if neighbour.distance == -1:
-                        neighbour.distance = next_node.distance+distance
+                    if neighbour.index == -1:
+                        neighbour.distance = distance
+                        neighbour.neighbours.append(next_node)
                         heap.insert(neighbour)
                     else:
-                        neighbour.distance = min(neighbour.distance, next_node.distance+distance)
-                        heap._repairUp(neighbour.index)
+                        if distance < neighbour.distance:
+                            neighbour.distance = distance
+                            neighbour.neighbours = [next_node]
+                            heap._repairUp(neighbour.index)
 
+        # Return the sum of the distances in the MST
+        return functools.reduce(lambda sum, node: sum + node.distance, self.nodes.values(), 0)
 
 ######################## MAIN ##########################
 
 # See if arguments are correct
-if len(sys.argv) < 4 or len(sys.argv) > 5:
-    print("Sintax: Dijkistra.py <options> graph.txt NodeA NodeB \n The option -n don't print the path between A and B.")
+if len(sys.argv) < 2 or len(sys.argv) > 3:
+    print("Sintax: Prim.py <options> graph.txt \n The option -n don't print the MST.")
     sys.exit()
 
-print_path = True
+print_tree = True
 
-if len(sys.argv) > 4:
+if len(sys.argv) > 2:
     if sys.argv[1] == "-n":
-        print_path = False
+        print_tree = False
 
 # Create WeightedGraph
 try:
-    graph_file = sys.argv[1 if len(sys.argv) ==  4 else 2]
+    graph_file = sys.argv[1 if len(sys.argv) ==  2 else 2]
     graph = WeightedGraph()
     graph.readWeightedGraph(graph_file)
 except IOError:
    print("Error: The file",  graph_file,  "can\'t be read.")
    sys.exit()
 
-a = int(sys.argv[2 if len(sys.argv) ==  4 else 3])
-b = int(sys.argv[3 if len(sys.argv) ==  4 else 4])
-
-
-# Execute Dijkstra and count the time wasted
+# Execute Prim and count the time wasted
 start_time = time.time()
 try:
-    graph.dijkstra(a)
+    distance = graph.prim()
 except RuntimeError as element:
    print("Error:", element.args[0] , "is not a node.")
    sys.exit()
 print("--- %f seconds ---" % (time.time() - start_time))
 
 # Print the result
-if graph.nodes[b].distance < 0:
-    print("The given nodes are not connected.")
-else:
-    print("Path length: ", graph.nodes[b].distance)
-    if print_path:
-        print("Path between the nodes ", a, " and ", b, ": ")
+print("Total distance of the MST:", distance)
+
+# If chosen, print the tree
+if print_tree:
+    print("Minimum Spanning Tree:")
+    for node in graph.nodes.values():
+        print(node.key, end=" ")
+        for neighbour in node.neighbours:
+            print(neighbour.key, end=" ")
+        print("")
+
+
