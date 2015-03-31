@@ -8,12 +8,15 @@
 
 # This program read a weighted graph as an adjacency list from a file. 
 # Afterwards it executes de Prim algorithm to find the minimum spanning tree.
+# This implementation runs in O(|E| log |V| time) thanks to the use of heaps
+# to keep vertices to be added to the spanning tree whose order is the minimum
+# weight of the ledges that connect the edge to the spanning tree.
 
 import sys
 import time
 import functools # reduce
 
-#------------- MINHEAP IMPLEMENTATION FOR DIJKSTRA--------------#
+#------------- MINHEAP IMPLEMENTATION FOR PRIM --------------#
 
 # Swap two components of an array
 def swap(array, i, j):
@@ -221,7 +224,6 @@ class WeightedGraph(object):
         data.close()
 
     # Prim algorithm
-    # Parameters:
     def prim(self):
         # Get a node from the graph as started node.
         a = self.nodes[1]
