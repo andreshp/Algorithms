@@ -7,7 +7,7 @@
 #######################################################################
 
 # This program read a weighted graph as an adjacency list from a file. 
-# Afterwards it executes de Kruskal algorithm to find the minimum spanning tree.
+# Afterwards it executes the Kruskal algorithm to find the minimum spanning tree.
 # This implementation runs in O(|E| log |V| time) with an Union-Find Structure
 
 import sys
