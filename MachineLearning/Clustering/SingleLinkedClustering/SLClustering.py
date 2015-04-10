@@ -16,12 +16,13 @@ import sys
 import time
 
 # Vertex Class. 
-# It keeps an index and the cluster to wich the vertex
-# 
+# Vertex Class. 
+# It keeps the vertex key and the cluster
+# asociated with the vertex.
 class Vertex(object):
     # Contructor
-    def __init__(self, value):
-        self.key = value
+    def __init__(self, key):
+        self.key = key
         self.cluster = Cluster(self)
     # Hash function
     def __hash__(self):
