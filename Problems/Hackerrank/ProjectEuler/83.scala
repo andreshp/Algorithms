@@ -5,7 +5,7 @@ object Solution {
         var sol = Array.ofDim[Long](N,N)
 
         // Read matrix
-        for(i <- 0 to N-1 ){ matrix(i) = readLine().split(" ")map(_.toLong) }        
+        for(i <- 0 to N-1 ){ matrix(i) = readLine().split(" ")map(_.toLong) }
 
         // Initializes solution matrix
         for {

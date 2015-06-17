@@ -58,7 +58,6 @@ class Graph(object):
     # Otherwise it raise an exception.
     # Efficiency:  O(|V| + |E|)
     def topologicalSort(self):
-        print(memory())
         sorted_nodes = []; visited = set()
 
         for node in self.adj_list:
@@ -80,7 +79,6 @@ class Graph(object):
     #   - path : Current path. A path is a sucesion of nodes connected by an edge.
     #            It is only used to check that the graph is acyclic.
     def depthFirstSearch(self, a, visited, sorted_nodes, path):
-        print(memory())
         # Each non-visited neighbour is visited:
         for neighbour in self.adj_list[a]:
             if neighbour not in visited:

@@ -18,41 +18,52 @@ def solve(tree, shorcuts, D, K):
             D[i][0] = 0
 
     # Initializes distances to distances with no shorcuts.
-    # A DFS compute the distance just going down.
+    # A BFS compute the distance just going down.
     # Then a DFS compute the distance using a node parent.
-    DFS1(tree,D,0,root,-1)
-    DFS2(tree,D,0,root,-1)
+    BFS(tree,D,0)
+    DFS(tree,D,0,root)
 
     # For each number of feasible shorcuts:
     # - For each node take the better shorcut.
     # - Update all the distances with the BFS and DFS scheme
     for j in range(1,K+1):
-        for i in range(1, N+1):
-            D[i][j] = D[i][j-1]
         for i in range(1,N+1):
+            D[i][j] = D[i][j-1]
             for neighbour, distance in shorcuts[i]:
                 D[i][j] = min(D[i][j], D[neighbour][j-1] + distance)
-        DFS1(tree,D,j,root,-1)
-        DFS2(tree,D,j,root,-1)
+        BFS(tree,D,j)
+        DFS(tree,D,j,root)
     
     for i in range(1, N+1):
         print(D[i][K])
 
-# DFS updating the nodes distance to exit from bottom to top.
-# It is implemented in the recursive way.
-def DFS1(tree, D, j, node, predecessor):
-    for child, distance in tree[node]:
-        if child != predecessor:
-            DFS1(tree, D, j, child, node)
-        D[node][j] = min(D[node][j], D[child][j] + distance)
+# BFS updating the nodes distance to exit from bottom to top.
+# It is implemented in an iterative way.
+def BFS(tree, D, j):
+    # Adds the leaves to the queue
+    q = queue.Queue()
+    for i in range(1, N+1):
+        if len(tree[i]) == 1:
+            q.put((i, -1))
+    # Go up in the tree updating the distances
+    while not q.empty():
+        node, predecesor = q.get()
+        for parent, distance in tree[node]:
+            if parent != predecesor and D[parent][j] > D[node][j] + distance:
+                q.put((parent, node))
+                D[parent][j] = D[node][j] + distance
 
 # DFS updating the nodes distance to exit from top to bottom.
-# It is implemented in the recursive way.
-def DFS2(tree, D, j, node, predecessor):
-    for child, distance in tree[node]:
-        if child != predecessor:
-            D[child][j] = min(D[child][j], D[node][j] + distance)
-            DFS2(tree, D, j, child, node)
+# It is implemented in an iterative way.
+def DFS(tree, D, j, root):
+    stack = queue.LifoQueue()
+    stack.put((root, -1))
+    while not stack.empty():
+        node, predecesor = stack.get()
+        for child, distance in tree[node]:
+            if child != predecesor:
+                D[child][j] = min(D[child][j], D[node][j] + distance)
+                stack.put((child, node))
 
 #-------------------------- MAIN ----------------------------#
 
