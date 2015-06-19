@@ -40,18 +40,6 @@ class SegmentTreeNodeMin(object):
 
 class SegmentTree(object):
 
-    # Initializes a Segment Tree.
-    # array : Array from which the segment tree is built.
-    # SegmentTreeNode : Class that will be used as a segment 
-    #     tree node. It gets the desired statictics from the
-    #     array.
-    def __init__(self, array, SegmentTreeNode):
-        self.SegmentTreeNode =  SegmentTreeNode
-        self.size = SegmentTree.getSegmentTreeSize(len(array))
-        self.nodes = [self.SegmentTreeNode() for i in range(0,self.size+1)]
-        self.array = array
-        self._buildTree(array, 1, 0, len(array)-1)
-
     # Build a segment tree from the given array.
     # array: Array from which the segment tree is built.
     # st_index: current segment tree node
@@ -68,11 +56,23 @@ class SegmentTree(object):
             self.nodes[st_index].merge(self.nodes[left], self.nodes[right])
 
     # Get the segment tree size for a input of size N    
-    def getSegmentTreeSize(N):
+    def _getSegmentTreeSize(N):
         size = 1
         while size < N:
             size <<= 1
         return size << 1
+
+    # Initializes a Segment Tree.
+    # array : Array from which the segment tree is built.
+    # SegmentTreeNode : Class that will be used as a segment 
+    #     tree node. It gets the desired statictics from the
+    #     array.
+    def __init__(self, array, SegmentTreeNode):
+        self.SegmentTreeNode =  SegmentTreeNode
+        self.size = SegmentTree._getSegmentTreeSize(len(array))
+        self.nodes = [self.SegmentTreeNode() for i in range(0,self.size+1)]
+        self.array = array
+        self._buildTree(array, 1, 0, len(array)-1)
 
     # Get the value associated with the range [lo, hi]
     def getValue(self, lo, hi):
