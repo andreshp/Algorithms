@@ -3,7 +3,7 @@
 ######################################################################
 # Autor: Andrés Herrera Poyatos
 # Date: June, 2015
-# Segment Tree Implementation
+# Segment Tree with Range Updates Implementation
 #######################################################################
 
 #----------------- SEGMENT TREE IMPLEMENTATION -----------------#
@@ -16,10 +16,13 @@ class SegmentTreeNode(object):
     # info = Subinterval information
     def __init__(self):
         self.info = None
+        self.start = -1
+        self.end = -1
 
     # Given the value of an array element,
     # build the information for this leaf.
-    def assignLeaf(self, value):
+    def assignLeaf(self, value, index):
+        self.start = self.end = index
         pass# Insert the code to build the leaf information
             
     # Merge the information of left and right
@@ -31,9 +34,9 @@ class SegmentTreeNode(object):
     def getInfo(self):
         return self.info
 
-    # Check if the info contained is the same that the given info
-    def isSameInfo(self, info):
-        pass# Insert comparation code
+    # Update the node info
+    def updateLeaf(self, value):
+        pass # Insert code
 
 # Node of the Segment Tree.
 # It represent the statictics associated with a 
@@ -47,26 +50,31 @@ class SegmentTreeNodeMin(object):
     # Its attribute value is initialized to Node.
     def __init__(self):
         self.info = None
+        self.start = -1
+        self.end = -1
 
     # Given the value of an input array element,
     # build aggregate statistics for this leaf node.
-    def assignLeaf(self, value):
+    def assignLeaf(self, value, index):
         self.info = value
-    
+        self.start = self.end = index
+     
     # Merge the aggregate statistics of left and right
     # children to form the aggregate statistics of
     # their parent node.
     def merge(self, left, right):
         self.info = min(left.info, right.info)
+        self.start = left.start
+        self.end = right.end
 
     # Return the value of required aggregate statistic
     # associated with this node.
     def getInfo(self):
         return self.info
 
-    # Check if the info contained is the same that the given info
-    def isSameInfo(self, info):
-        return self.info == info
+    # Update the node info
+    def updateLeaf(self, value):
+        self.info = value
 
 class SegmentTree(object):
 
@@ -77,7 +85,7 @@ class SegmentTree(object):
     def _buildTree(self, array, st_index, lo, hi):
         if lo == hi: 
             # The node is a leaf responsible of V[lo,lo]
-            self.nodes[st_index].assignLeaf(array[lo])
+            self.nodes[st_index].assignLeaf(array[lo],lo)
         else: 
             # The node is not a leaf.
             # Both children are built and merged afterwards for this node.
@@ -151,7 +159,7 @@ class SegmentTree(object):
         # If current node is a leaf we have ended the search and assign 
         # the value to the leaf.
         if lo == hi:
-            self.nodes[st_index].assignLeaf(value)
+            self.nodes[st_index].assignLeaf(value,index)
 
         # If the current node is not a leaf, the search is continued recursively
         # and the current node information is updated afterwards.
@@ -177,36 +185,57 @@ class SegmentTree(object):
         self._update(1, 0, len(self.array)-1, index, value)
         self.array[index] = value
 
-    # Update the segment tree. 
-    # The given value is assigned to the array's
-    # component at index place. The segment tree is updated accordingly. 
-    # index : Array's component to be updated.
-    # value : New value for the array's component to update.
-    def update2(self, index, value):
-        st_index = self.size // 2 + index # Leaf index
-        # Update leaf and array
-        self.array[index] = value
-        self.nodes[st_index].assignLeaf(value) 
-        # Update leaf ancestors
-        st_index = st_index // 2
-        while st_index > 0:
-            # Get current info and update it with a merge from the children
-            current_info = self.nodes[st_index]
-            self.nodes[st_index].merge(self.nodes[2*st_index], self.nodes[2*st_index+1])
-            # If the info has not changed then the algorithm ends
-            if self.nodes[st_index].isSameInfo(current_info):
-                break
-            # Go to node's parent
-            st_index = st_index // 2
+    # Update a range of the segment tree in O(hi-lo). 
+    # The given value is assigned to the array's components
+    # in range [lo,hi]. The segment tree is updated accordingly. 
+    # st_index: Current segment tree node.
+    # [lo, hi]: Array's components to be updated.
+    # value : New value for the array's components in previous range.
+    def _updateRange(self, st_index, lo, hi, value):
+        if lo == hi:
+            self.nodes[st_index].updateLeaf(value)
+            self.array[lo] = value
+        else:
+           # Get the middle point and left and right children
+            mid = (self.nodes[st_index].start + self.nodes[st_index].end) // 2
+            left_child = 2 * st_index
+            right_child = left_child + 1
+
+            # If [lo,hi] nested in [mid+1,self.nodes[st_index].end]
+            if lo > mid:
+                self._updateRange(right_child, lo, hi, value)
+            # If [lo,hi] nested in [self.nodes[st_index].start,mid]
+            elif hi <= mid:
+                self._updateRange(left_child, lo, hi, value)
+            else:
+                # Divides the update in both parts
+                self._updateRange(left_child, lo, mid, value)
+                self._updateRange(right_child, mid+1, hi, value)
+ 
+            # Merge the children info
+            self.nodes[st_index].merge(self.nodes[left_child], self.nodes[right_child])
+
+
+    # Update a range of the segment tree in O(hi-lo). 
+    # The given value is assigned to the array's components
+    # in range [lo,hi]. The segment tree is updated accordingly. 
+    # [lo, hi]: Array's components to be updated.
+    # value : New value for the array's components in previous range.
+    def updateRange(self, lo, hi, value):
+        self._updateRange(1,lo,hi,value)
 
 #----------------------- EXAMPLE MAIN -----------------------#
 
 array = [1,2,3,4,5,7,8]
+print("Array:", array)
 st = SegmentTree(array, SegmentTreeNodeMin)
-print(st.getInfo(0,3))
-print(array)
-print(list(map(lambda x: x.getInfo(), st.nodes)))
+print("Get [0,3] info:", st.getInfo(0,3))
 st.update(3,-28)
-print(list(map(lambda x: x.getInfo(), st.nodes)))
-print(array)
-print(st.getInfo(0,6))
+print("Update V[3] to -28")
+print("Array:", array)
+print("Segment Tree Heap:", list(map(lambda x: x.getInfo(), st.nodes)))
+st.updateRange(1,5,-29)
+print("Update Range [1,5] to -29")
+print("Array:", array)
+print("Segment Tree Heap:", list(map(lambda x: x.getInfo(), st.nodes)))
+print("Get [0,6] info:", st.getInfo(0,6))
