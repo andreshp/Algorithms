@@ -23,16 +23,14 @@ class Graph(object):
     #  - adj_list : Adjacency list to represent the graph. It is implemented as a dictionary of dictionaries.
     #               The first dictionary's keys are the nodes of the graph. Its values are dictionaries with
     #               the key's neighbours and the number of edges between them.
-    #  - outdegree : Dictionary which maps for each node its outdegree (The number of edges leaving from this node).
     #  - num_edges : Number of edges in the graph.
     #  - type_node : Type of the graph nodes. It is int by default.
     #  
     #  The graph admits multiples edges from one node to another thanks to the dictionary of dictionaries implementation.
 
     # Initializes a graph object
-    def __init__(self, adj_list = {}, outdegree = {}, num_edges = 0, type_node = int):
+    def __init__(self, adj_list = {}, num_edges = 0, type_node = int):
         self.adj_list = adj_list
-        self.outdegree = outdegree
         self.num_edges = num_edges
         self.type_node = type_node
 
@@ -49,8 +47,8 @@ class Graph(object):
             for i in range(1, len(nodes)):
                 self.adj_list[nodes[0]][nodes[i]] = self.adj_list[nodes[0]][nodes[i]]+1 if nodes[i] in self.adj_list[nodes[0]] else 1
             
-            # Increment num_edges and add degree(nodes[0]) to outdegree:
-            self.num_edges += len(nodes)-1; self.outdegree[nodes[0]] = len(nodes)-1
+            # Increment num_edges:
+            self.num_edges += len(nodes)-1
         
         data.close()
 
