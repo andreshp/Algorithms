@@ -13,3 +13,5 @@ The longest increasing subsequence problem is solvable in time O(*n* log *n*), w
 1. A dynamic programming approach in O(*n²*).
 2. An improvement for the O(*n²*) dynamic approach using segment trees to get O(*n* log *n*).
 3. A dynamic programming approach using binary search and obtaining O(*n* log *n*).
+
+To see the solutions 1 and 2 go to [this directory](https://github.com/andreshp/Algorithms/tree/master/DynamicProgramming/LongestIncreasingSubsequence).
