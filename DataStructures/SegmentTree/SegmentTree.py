@@ -75,6 +75,7 @@ class SegmentTree(object):
     # st_index: current segment tree node index.
     # lo and hi : Range of input array subinterval that this node is responsible of.
     def _buildTree(self, array, st_index, lo, hi):
+        self.nodes[st_index] = self.SegmentTreeNode()
         if lo == hi: 
             # The node is a leaf responsible of V[lo,lo]
             self.nodes[st_index].assignLeaf(array[lo])
@@ -105,7 +106,7 @@ class SegmentTree(object):
         # Segment tree size (number of nodes)
         self.size = SegmentTree._getSegmentTreeSize(len(array))
         # Heap with the nodes
-        self.nodes = [self.SegmentTreeNode() for i in range(0,self.size)]
+        self.nodes = [None for i in range(0,self.size)]
         self.array = array
         # The tree is built
         self._buildTree(array, 1, 0, len(array)-1)

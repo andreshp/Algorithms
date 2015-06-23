@@ -33,7 +33,7 @@ from bisect import *
 #    We can do a binary search for this since S is supposed to be sorted.
 #    Then assign A[i] to S[pos] and i to Si[pos]. Also P[i] = Si[pos-1]
 #
-# From P definition the following code obtains the LSI ending at i:
+# From P definition the following code obtains the LIS ending at i:
 #    LIS = []
 #    while  i != -1:
 #        LIS.append(i)
@@ -42,19 +42,26 @@ from bisect import *
 #
 # Let's proof that the algorithm is correct by induction. The induction hypothesis 
 # which we want to proove at every iteration i is that after the iteration:
-#   - The length of S is the length of the longest increasing sequence for A[0:i+1].
-#   - S is sorted 
-#   - Si[-1] has the index of the last element of the A[0:i+1] LSI wich ends first.
-#   - P[i] let us obtain (as explained before) the LSI ending at i.
+#   1. The length of S is the length of the longest increasing sequence for A[0:i+1].
+#   2. S is sorted 
+#   3. Si[-1] has the index of the last element of the A[0:i+1] LIS with smaller ending value.
+#   4. P[i] let us obtain (as explained before) the LIS ending at i.
 # 
 # Let's proove it for every i:
 #   - If i = 0 (base case) it is trivial by definition of S.
 #   - Supposes the induction hypothesis for i-1 >= 0. We have 2 cases:
-#      + A[i] > S[-1]. Then the LSI ending at i is any LSI for A[0:i] + A[i]. 
+#      + A[i] > S[-1]. Then the LIS ending at i is any LIS for A[0:i] + A[i]. 
 #        Consequently, it is easy to see that the operations keep the hypothesis.
-#      + A[i] <= S[-1]. Then we can't get a longer LSI for A[0:i+1] than the one of A[0:i] since
-#        
-#        
+#      + A[i] <= S[-1]. Then we can't get a longer LIS for A[0:i+1] than the one of A[0:i] since
+#        if there were one then the first |S| elements would be a LIS for A[0:i] so A[i] is greater
+#        than those |S| elemens. However, the greater one of those is smallest than S[-1] because of 3,
+#        contradiction. So 1 is achieved. Clearly 2 is achieved after binary search and assignations.
+#        3 isn't even touched. Now, we want to compute one of the LIS ending at i. Let's supose that
+#        we have one, call it B of indexes Bi. Then B[:len(B)-1] is a LIS ending at Bi[-2]. But we
+#        already have one computed. Furthermore, Bi[-2] < A[i]. If we find pos with the binary search,
+#        the LIS computed for pos-1, call it C[:len(C)-1] and C[-1] A[i], then C is a LIS ending at i
+#        (it must have the same length than B since C[-2] >= B[-2] and if C[-2] > B[-2] then C is longer, 
+#        contradiction. So C[-2] = B[-2] and the length must be the same).
 
 #---------------------------- FUNCTIONS ----------------------------#
 
