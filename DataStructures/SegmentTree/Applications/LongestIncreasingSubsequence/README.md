@@ -8,4 +8,8 @@ This subsequence is not necessarily contiguous or unique. For example, the vecto
 
 ## Solutions
 
-The longest increasing subsequence problem is solvable in time O(n log n), where n denotes the length of the input sequence.[2]
+The longest increasing subsequence problem is solvable in time O(*n* log *n*), where *n* denotes the length of the input sequence. I have implemented 3 possible solutions:
+
+1. A dynamic programming approach in O(*n²*).
+2. An improvement for the O(*n²*) dynamic approach using segment trees to get O(*n* log *n*).
+3. A dynamic programming approach using binary search and obtaining O(*n* log *n*).
